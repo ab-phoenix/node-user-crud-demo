@@ -7,8 +7,6 @@ const envVarsSchema = Joi.object()
 	.keys({
 		NODE_ENV: Joi.string().valid('production', 'staging', 'development', 'test', 'local'),
 		PORT: Joi.number().default(3000),
-
-		BCRYPT_SALT_ROUNDS: Joi.string(),
 		DB_URI: Joi.string(),
 	})
 	.unknown();

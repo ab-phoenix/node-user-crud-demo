@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 
 /**
  * Get all key that you want to exclude
@@ -110,15 +109,6 @@ export const deselectFields = (options = {}) => {
 		return result;
 	}
 };
-
-/**
- * Synchronously generates a hash for the given string.
- * @param {*} str String to hash
- * @return Resulting hash
- */
-export function genBcryptHash(str) {
-	return bcrypt.hashSync(str, bcrypt.genSaltSync(process.env.BCRYPT_SALT_ROUNDS || 10));
-}
 
 /**
  *
