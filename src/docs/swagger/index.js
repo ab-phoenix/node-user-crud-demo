@@ -11,6 +11,7 @@ import { userPath } from './path/index.js';
 const path = {
 	'/user': { get: userPath.getUsers, post: userPath.createUser },
 	'/user/{id}': { get: userPath.getUser, patch: userPath.updateUser, delete: userPath.deleteUser },
+	'/user/{id}/upload-image': { patch: userPath.uploadImage },
 };
 
 export default {

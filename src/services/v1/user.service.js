@@ -1,8 +1,12 @@
+import mime from 'mime';
+
 import APIError from '../../utils/APIError.js';
-import { deselectFields, pagination, removeFields } from '../../utils/helper.js';
+import { deselectFields, formatBytes, pagination, removeFields } from '../../utils/helper.js';
 import { aggregatePagination } from '../../utils/customPagination.js';
+import { uploadFile } from '../../utils/aws-s3.js';
 
 import userModel from '../../models/v1/user.model.js';
+import userImageModel from '../../models/v1/user-image.model.js';
 
 export const getUsers = async reqQuery => {
 	try {
@@ -19,6 +23,14 @@ export const getUsers = async reqQuery => {
 			userModel,
 			[
 				{ $match: query },
+				{
+					$lookup: {
+						from: 'userImages',
+						localField: 'userImages',
+						foreignField: '_id',
+						as: 'userImages',
+					},
+				},
 				{
 					$project: deselectFields({ exclude: ['createdAt'] }),
 				},
@@ -43,11 +55,51 @@ export const createUser = async reqBody => {
 	}
 };
 
-export const getUser = async reqParams => {
+export const uploadImage = async (reqParams, files) => {
 	try {
 		const { id: recordId } = reqParams;
 
 		const result = await userModel.findOne({ _id: recordId, isDeleted: false }, deselectFields());
+		if (!result) throw new APIError({ status: 404, message: 'User not found' });
+
+		const userImagePayload = [];
+
+		await Promise.allSettled(
+			files.map(async file => {
+				const s3Url = await uploadFile(file.buffer, {
+					folderPath: `user-images/${recordId}/`,
+					fileType: mime.getExtension(file.mimetype),
+				});
+
+				if (s3Url) {
+					userImagePayload.push({
+						user: recordId,
+						imageUrl: s3Url,
+						fileName: file.originalname,
+						fileSize: formatBytes(file.size),
+					});
+				}
+			})
+		);
+
+		const userImages = await userImageModel.insertMany(userImageModel);
+		const userImageIds = userImages.map(userImage => userImage._id);
+
+		await userModel.updateOne({ _id: recordId }, { $push: { userImages: userImageIds } });
+
+		//
+	} catch (error) {
+		return Promise.reject(error);
+	}
+};
+
+export const getUser = async reqParams => {
+	try {
+		const { id: recordId } = reqParams;
+
+		const result = await userModel.findOne({ _id: recordId, isDeleted: false }, deselectFields()).populate({
+			path: 'userImages',
+		});
 		if (!result) throw new APIError({ status: 404, message: 'User not found' });
 
 		return result;

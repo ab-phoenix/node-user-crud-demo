@@ -13,6 +13,8 @@ router.get('/:id', validate(userValidation.getUser), userController.getUser);
 
 router.post('/', validate(userValidation.createUser), userController.createUser);
 
+router.patch('/:id/upload-image', userController.uploadImage);
+
 router.patch('/:id', validate(userValidation.updateUser), userController.updateUser);
 
 router.delete('/:id', validate(userValidation.deleteUser), userController.deleteUser);

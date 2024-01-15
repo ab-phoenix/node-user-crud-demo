@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { GENDER } from '../../constant/enum.js';
 
 const { Schema, model } = mongoose;
+const { ObjectId } = Schema;
 
 const UserSchema = new Schema(
 	{
@@ -16,6 +17,8 @@ const UserSchema = new Schema(
 		gender: { type: String, required: true, enums: Object.values(GENDER) },
 
 		address: { type: String, default: null, max: 100 },
+
+		userImages: [{ type: ObjectId, ref: 'userImage', default: null }],
 
 		isDeleted: { type: Boolean, default: false },
 		deletedAt: { type: Date, default: null },

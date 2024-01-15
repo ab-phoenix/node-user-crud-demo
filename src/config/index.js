@@ -8,6 +8,13 @@ const envVarsSchema = Joi.object()
 		NODE_ENV: Joi.string().valid('production', 'staging', 'development', 'test', 'local'),
 		PORT: Joi.number().default(3000),
 		DB_URI: Joi.string(),
+
+		AWS_ACCESS_KEY_ID: Joi.string(),
+		AWS_SECRET_ACCESS_KEY: Joi.string(),
+		AWS_REGION: Joi.string(),
+		AWS_BUCKET: Joi.string(),
+		AWS_ACL: Joi.string(),
+		AWS_BUCKET_URL: Joi.string(),
 	})
 	.unknown();
 
@@ -28,3 +35,14 @@ export const dbConfig = Object.freeze({
 		useUnifiedTopology: true,
 	},
 });
+
+export const awsSecrets = {
+	accessKeyId: envVars.AWS_ACCESS_KEY_ID,
+	secretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
+	region: envVars.AWS_REGION,
+	s3: {
+		bucket: envVars.AWS_BUCKET,
+		acl: envVars.AWS_ACL,
+		bucketUrl: envVars.AWS_BUCKET_URL,
+	},
+};

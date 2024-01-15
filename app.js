@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
+import multer from 'multer';
 
 import { nodeEnv } from './src/config/index.js';
 import * as morgan from './src/config/morgan.js';
@@ -11,6 +12,7 @@ import Routes from './src/routes/index.routes.js';
 import sendJson from './src/middlewares/response.js';
 
 const app = express();
+const upload = multer();
 
 app.response.sendJson = sendJson;
 
@@ -27,6 +29,8 @@ app.use(express.json({ limit: '100mb' }));
 
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
+
+app.use(upload.any());
 
 // gzip compression
 app.use(compression());

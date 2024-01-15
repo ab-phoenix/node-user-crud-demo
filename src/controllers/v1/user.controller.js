@@ -18,6 +18,15 @@ export const createUser = async (req, res, next) => {
 	}
 };
 
+export const uploadImage = async (req, res, next) => {
+	try {
+		await userService.uploadImage(req.body);
+		return res.sendJson({ message: 'Image uploaded successfully' });
+	} catch (error) {
+		return next(error);
+	}
+};
+
 export const getUser = async (req, res, next) => {
 	try {
 		const result = await userService.getUser(req.params);

@@ -150,6 +150,42 @@ export const createUser = {
 	},
 };
 
+export const uploadImage = {
+	tags: ['User'],
+	summary: 'Upload user image',
+	security: [],
+	consumes: ['multipart/form-data'],
+	parameters: [
+		{
+			name: 'id',
+			in: 'path',
+			description: 'User id',
+			required: true,
+			schema: { type: 'string' },
+		},
+	],
+	requestBody: {
+		content: {
+			'multipart/form-data': {
+				schema: {
+					type: 'object',
+					required: ['files'],
+					properties: {
+						files: {
+							type: 'string',
+							format: 'binary',
+						},
+					},
+				},
+			},
+		},
+	},
+	responses: {
+		200: { content: { 'application/json': { schema: successResponse } } },
+		Error: { content: { 'application/json': { schema: errorResponse } } },
+	},
+};
+
 export const updateUser = {
 	tags: ['User'],
 	summary: 'Update user',
