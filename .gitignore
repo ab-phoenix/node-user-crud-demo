@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+package-lock.json
+
+# yarn error logs
+yarn-error.log
+
+ecosystem.config.json
+# Environment varibales
+.env
+superbetter.json
+
+# Code coverage
+coverage
+
+.idea
